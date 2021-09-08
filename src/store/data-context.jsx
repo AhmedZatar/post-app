@@ -15,8 +15,6 @@ const DataContext= React.createContext({
     updatePost:(data)=>{},
     getId:(email)=>{}
 
-
-
 })
 
 

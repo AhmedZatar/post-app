@@ -1,11 +1,15 @@
 import { useState, useContext } from "react/cjs/react.development";
 import "./Login.css";
 import DataContext from "../store/data-context";
+import { useHistory } from 'react-router-dom';
+
 function Login() {
   const dataCtx = useContext(DataContext);
 
   const [passwrod, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  let history = useHistory();
+
 
 
   const [incorrectSubmit, setIncorrectSubmit] = useState(false);
@@ -34,12 +38,19 @@ function Login() {
             }
         })
         dataCtx.getId(email.trim())
-        dataCtx.onLogin()
+        // dataCtx.onLogin()
+        
         dataCtx.getUserPosts(id)
+        history.push('/posts');
         
     }
 
   };
+
+
+
+
+
 
   return (
     <form onSubmit={submitHandler} className="login-form">

@@ -1,21 +1,15 @@
-import { useContext,} from "react";
-import DataContext from "./store/data-context";
-import Login from "./components/Login";
-import Posts from "./components/Posts";
-
-
+// import { useContext, } from "react";
+// import DataContext from "./store/data-context";
+import { BrowserRouter } from 'react-router-dom';
+import Router from './router';
 function App() {
-  const dataCtx= useContext(DataContext)
+  // const dataCtx = useContext(DataContext)
 
 
   return (
-    <div>
-      {!dataCtx.isLoggedin&&<Login/>}
-      {dataCtx.isLoggedin&&<Posts/>}
-
-
-
-    </div>
+    <BrowserRouter>
+    <Router/>
+    </BrowserRouter>
   );
 }
 
