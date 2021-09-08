@@ -128,6 +128,40 @@ function DataProvider(props) {
     }
   }
 
+  async function updatePostHandler(post){
+
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${post.id}`,
+        {
+          method: "PUT",
+          body: JSON.stringify(post),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+      
+      let updatedPosts = [...posts];
+      let index = 0;
+      posts.forEach((item, i) => {
+        if (item.id === +data.id) {
+          index = i;
+        }
+      });
+      updatedPosts[index]=data;
+
+      setPosts(updatedPosts)
+      console.log("Updated Successfully");
+      console.log(response.status);
+    } catch (error) {
+      console.log(error.message);
+    }
+
+  }
+
   const dataContext = {
     emails: emails,
     posts: posts,
@@ -139,7 +173,7 @@ function DataProvider(props) {
     getCommintes: getCommintesHandler,
     addPost: addPostHandler,
     removePost: removePostHandler,
-    updatePost: (data) => {},
+    updatePost: updatePostHandler,
     getId: getIdHandler,
   };
   return (
