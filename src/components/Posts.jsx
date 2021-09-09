@@ -1,6 +1,6 @@
 import DataContext from "../store/data-context";
 import { useContext, useState, useEffect } from "react/cjs/react.development";
-import "./Posts.css";
+// import "./Posts.css";
 
 function Posts() {
   const dataCtx = useContext(DataContext);
@@ -30,7 +30,6 @@ function Posts() {
     setUpdateBody(event.target.value);
   }
 
-
   useEffect(() => {
     setPosts(dataCtx.posts);
   }, [dataCtx.posts]);
@@ -55,6 +54,8 @@ function Posts() {
         title: title,
         body: body,
       };
+
+      console.log(data.id)
 
       dataCtx.addPost(data);
 
@@ -81,7 +82,7 @@ function Posts() {
     if (updatetitle.trim().length === 0 || updatebody.trim().length === 0) {
       setPostUpdate("");
       return;
-    }else{
+    } else {
       const data = {
         userId: dataCtx.userID,
         id: event.target.value,
@@ -93,9 +94,6 @@ function Posts() {
       setUpdateTitle("");
       setUpdateBody("");
     }
-
-
-     
   }
   return (
     <div className="posts">
