@@ -4,64 +4,58 @@ import { useState, useEffect } from "react";
 
 function DataProvider(props) {
   const [emails, SetEmails] = useState([]);
+  const [usersData, SetUsersData] = useState([]);
+  const [userData, SetUserData] = useState({});
   const [comments, setComments] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
   const [userId, setUserID] = useState(0);
   const [posts, setPosts] = useState([]);
 
-  async function getEmailsHandler() {
+  const getEmailsHandler = async () => {
     const response = await fetch("https://jsonplaceholder.typicode.com/users");
     const data = await response.json();
 
-    let emails1 = [];
-
-    data.forEach((item) => {
-      emails1.push(item.email);
+    SetUsersData(data);
+    const emails1 = data.map((item) => {
+      return item.email;
     });
 
     SetEmails(emails1);
-  }
+  };
 
   useEffect(() => {
     getEmailsHandler();
   }, []);
 
-  function loginHandler() {
+  useEffect(() => {
+    getUserPostsHandler(userId);
+  }, [userId]);
+
+  const loginHandler = () => {
     setIsLogged(true);
-  }
+  };
 
-  function getIdHandler(email) {
-    let num = 0;
+  const getIdHandler = (email) => {
+    const data = usersData.filter((user) => user.email === email);
+    setUserID(data[0].id);
+    SetUserData(data[0]);
+    loginHandler();
+  };
 
-    emails.forEach((item, i) => {
-      if (item === email) {
-        num = i + 1;
-      }
-    });
-
-    setUserID(num);
-  }
-
-  async function getUserPostsHandler(id) {
+  const getUserPostsHandler = async (id) => {
     try {
       const response = await fetch(
         "https://jsonplaceholder.typicode.com/posts"
       );
       const data = await response.json();
-      const filteredData = [];
-      data.forEach((post) => {
-        if (post.userId === id) {
-          filteredData.push(post);
-        }
-      });
-
+      const filteredData = data.filter((post) => post.userId === id);
       setPosts(filteredData);
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
-  async function removePostHandler(postID) {
+  const removePostHandler = async (postID) => {
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts/${postID}`,
@@ -88,9 +82,9 @@ function DataProvider(props) {
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
-  async function addPostHandler(post) {
+  const addPostHandler = async (post) => {
     try {
       const response = await fetch(
         "https://jsonplaceholder.typicode.com/posts",
@@ -113,9 +107,9 @@ function DataProvider(props) {
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
-  async function getCommintesHandler(postid) {
+  const getCommintesHandler = async (postid) => {
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts/${postid}/comments`
@@ -126,10 +120,9 @@ function DataProvider(props) {
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
-  async function updatePostHandler(post){
-
+  const updatePostHandler = async (post) => {
     try {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts/${post.id}`,
@@ -143,7 +136,7 @@ function DataProvider(props) {
       );
 
       const data = await response.json();
-      
+
       let updatedPosts = [...posts];
       let index = 0;
       posts.forEach((item, i) => {
@@ -151,25 +144,24 @@ function DataProvider(props) {
           index = i;
         }
       });
-      updatedPosts[index]=data;
+      updatedPosts[index] = data;
 
-      setPosts(updatedPosts)
+      setPosts(updatedPosts);
       console.log("Updated Successfully");
       console.log(response.status);
     } catch (error) {
       console.log(error.message);
     }
-
-  }
+  };
 
   const dataContext = {
     emails: emails,
+    userData: userData,
+    usersData: usersData,
     posts: posts,
     comments: comments,
     userID: userId,
     isLoggedin: isLogged,
-    onLogin: loginHandler,
-    getUserPosts: getUserPostsHandler,
     getCommintes: getCommintesHandler,
     addPost: addPostHandler,
     removePost: removePostHandler,

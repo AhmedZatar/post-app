@@ -3,11 +3,12 @@ import React from "react";
 const DataContext= React.createContext({
     
     emails:[],
+    userData: {},
+    usersData:[],
     posts:[],
     comments:[],
     userID:'',
     isLoggedin:false,
-    onLogin:()=>{},
     getUserPosts:(userID)=>{},
     getCommintes:(postID)=>{},
     addPost:(data)=>{},
