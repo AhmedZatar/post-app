@@ -12,7 +12,7 @@ import { orange } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme) => ({
   comments: {
     maxWidth: 1000,
-    minWidth: 700,
+    minWidth: 200,
     display: "flex",
     flexDirection: "column ",
     flexGrow: 1,
@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonGroup: {
     maxWidth: 1000,
-    minWidth: 700,
+    minWidth: 200,
     display: "flex",
     alignItems: "center",
     margin: "auto",
   },
   addPost: {
     maxWidth: 1000,
-    minWidth: 700,
+    minWidth: 200,
     display: "flex",
     flexDirection: "column ",
     alignItems: "center",
@@ -141,6 +141,13 @@ const Posts = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <Box bgcolor="#b0b0b0"
+      boxShadow={3}
+      maxWidth={1000}
+      padding={3}
+      margin="auto"
+      minWidth={700}
+    >
       <div className={classes.addPost}>
         <Typography variant="h3" gutterBottom>
           {" "}
@@ -183,19 +190,20 @@ const Posts = () => {
           <Box
             key={post.id}
             boxShadow={3}
-            maxWidth={1000}
+            maxWidth='100%'
             margin="auto"
-            minWidth={700}
+            minWidth={200}
             marginTop={2}
             padding={3}
             paddingBottom={3}
             marginBottom={2}
             borderRadius={16}
+
           >
             <Box
               display="flex"
-              width={1000}
-              minWidth={700}
+              width='100%'
+              minWidth={200}
               margin="auto"
               flexDirection="column"
               alignItems="center"
@@ -203,7 +211,7 @@ const Posts = () => {
               textAlign="left"
             >
               <Typography variant="h6">{post.title}</Typography>
-              <Typography maxWidth={1000} minWidth={700} variant="body1">{post.body}</Typography>
+              <Typography  variant="h6" gutterBottom>{post.body} </Typography>
             </Box>
 
             <ButtonGroup
@@ -282,6 +290,7 @@ const Posts = () => {
           </Box>
         );
       })}
+      </Box>
       {posts.length === 0 && <p>You don't have any post</p>}
     </ThemeProvider >
   );

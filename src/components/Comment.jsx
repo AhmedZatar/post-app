@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
       alignItems:'center',
     },
     paper: {
-      maxWidth: 1000,
-      minWidth: 700,
+      width: '90%',
+      minWidth: 200,
       margin: `${theme.spacing(1)}px auto`,
       padding: theme.spacing(2),
     },
