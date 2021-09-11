@@ -12,8 +12,7 @@ function DataProvider(props) {
   const [posts, setPosts] = useState([]);
 
   const getEmailsHandler = async () => {
-    const response = await fetch("https://jsonplaceholder.typicode.com/users");
-    const data = await response.json();
+    const data = await (await fetch("https://jsonplaceholder.typicode.com/users")).json();
 
     SetUsersData(data);
     const emails1 = data.map((item) => {

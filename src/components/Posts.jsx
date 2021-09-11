@@ -1,15 +1,63 @@
 import DataContext from "../store/data-context";
 import { useContext, useState, useEffect } from "react/cjs/react.development";
-import "./Posts.css";
+import Button from "@material-ui/core/Button";
+import Comment from "./Comment";
+import { makeStyles, createTheme , ThemeProvider } from "@material-ui/core/styles";
+import { TextField, Box } from "@material-ui/core";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Typography from "@material-ui/core/Typography";
+import { orange } from "@material-ui/core/colors";
+
+
+const useStyles = makeStyles((theme) => ({
+  comments: {
+    maxWidth: 1000,
+    minWidth: 700,
+    display: "flex",
+    flexDirection: "column ",
+    flexGrow: 1,
+    overflow: "hidden",
+    padding: theme.spacing(0, 3),
+    alignItems: "center",
+    margin: "auto",
+  },
+  buttonGroup: {
+    maxWidth: 1000,
+    minWidth: 700,
+    display: "flex",
+    alignItems: "center",
+    margin: "auto",
+  },
+  addPost: {
+    maxWidth: 1000,
+    minWidth: 700,
+    display: "flex",
+    flexDirection: "column ",
+    alignItems: "center",
+    margin: "auto",
+  },
+}));
+
+
+const theme = createTheme({
+
+  palette: {
+    primary: {
+      main: orange[800],
+    },
+  },
+});
 
 const Posts = () => {
+  const classes = useStyles();
+
   const dataCtx = useContext(DataContext);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [updatetitle, setUpdateTitle] = useState("");
-  const [updatebody, setUpdateBody] = useState("");
+  const [updateBody, setUpdateBody] = useState("");
   const [formEmpty, setFormEmpty] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [postUpdate, setPostUpdate] = useState("");
@@ -38,8 +86,8 @@ const Posts = () => {
     setComments(dataCtx.comments);
   }, [dataCtx.comments]);
 
-  const removePostHandler = (event) => {
-    dataCtx.removePost(event.target.value);
+  const removePostHandler = (e, idValue) => {
+    dataCtx.removePost(idValue);
   };
 
   const addPostHandler = (event) => {
@@ -50,7 +98,6 @@ const Posts = () => {
     } else {
       const data = {
         userId: dataCtx.userID,
-        id: posts.length + 1,
         title: title,
         body: body,
       };
@@ -62,112 +109,181 @@ const Posts = () => {
       setBody("");
     }
   };
-  const showCommentsHandler = (event) => {
-    setShowComments(event.target.value);
+  const showCommentsHandler = (e, idValue) => {
+    dataCtx.getCommintes(idValue);
+    setShowComments(idValue);
     setPostUpdate("");
-
-    dataCtx.getCommintes(event.target.value);
   };
 
   const hideCommentsHandler = (event) => {
     setShowComments(false);
   };
 
-  const showUppdateHandler = (event) => {
+  const showUppdateHandler = (e, idValue, t, b) => {
     setShowComments(false);
-    console.log();
-    setPostUpdate(event.target.value);
+    setUpdateTitle(t);
+    setUpdateBody(b);
+    setPostUpdate(idValue);
   };
 
-  const updatePostHandler = (event) => {
-    if (updatetitle.trim().length === 0 || updatebody.trim().length === 0) {
-      setPostUpdate("");
-      return;
-    } else {
-      const data = {
-        userId: dataCtx.userID,
-        id: event.target.value,
-        title: updatetitle,
-        body: updatebody,
-      };
-      dataCtx.updatePost(data);
-      setPostUpdate("");
-      setUpdateTitle("");
-      setUpdateBody("");
-    }
+  const updatePostHandler = (e, idValue) => {
+    const data = {
+      userId: dataCtx.userID,
+      id: idValue,
+      title: updatetitle,
+      body: updateBody,
+    };
+    dataCtx.updatePost(data);
+    setPostUpdate("");
+    setUpdateTitle("");
+    setUpdateBody("");
   };
+
   return (
-    <div className="posts">
-      <div>
-        <form className="form" onSubmit={addPostHandler}>
-          <h2> Add Post </h2>
-          <label>Title</label>
-          <input value={title} onChange={titleChangeHandler} type="text" />
-          <label>Body</label>
-          <textarea value={body} onChange={bodyChangeHandler}></textarea>
-          <button>Add</button>
-          {formEmpty && <p>The Form is Empty</p>}
-        </form>
-        {posts.map((post) => {
-          return (
-            <div className="post" key={post.id}>
-              <h2>{post.title}</h2>
-              <p>{post.body}</p>
-              <div>
-                <button value={post.id} onClick={removePostHandler}>
-                  Delete
-                </button>
-                <button onClick={showUppdateHandler} value={post.id}>
-                  Update
-                </button>
-                <button onClick={showCommentsHandler} value={post.id}>
-                  comments
-                </button>
-              </div>
-              {+showComments === post.id && (
-                <div className="comments">
-                  {comments.map((comment) => {
-                    return (
-                      <div className="comment" key={comment.id}>
-                        <p>{comment.body}</p>
-                        <div>
-                          <h4>Name: {comment.name}</h4>
-                          <h4>Email: {comment.email}</h4>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <button onClick={hideCommentsHandler}>Hide</button>
-                </div>
-              )}
-              {+postUpdate === post.id && (
-                <div className="update">
-                  <label>Title</label>
-                  <input
-                    placeholder={post.title}
-                    onChange={updateTitleChangeHandler}
-                    type="text"
-                  />
-                  <label>Body</label>
-
-                  <textarea
-                    placeholder={post.body}
-                    onChange={updateBodyChangeHandler}
-                  ></textarea>
-                  <form>
-                    <input type="hidden" name="id" value={post.id} />
-                    <button value={post.id} onClick={updatePostHandler}>
-                      Save
-                    </button>
-                  </form>
-                </div>
-              )}
-            </div>
-          );
-        })}
-        {posts.length === 0 && <p>You don't have any post</p>}
+    <ThemeProvider theme={theme}>
+      <div className={classes.addPost}>
+        <Typography variant="h3" gutterBottom>
+          {" "}
+          New Post{" "}
+        </Typography>
+        <TextField
+          variant="filled"
+          value={title}
+          onChange={titleChangeHandler}
+          type="text"
+          label="Title"
+          margin="dense"
+          fullWidth
+        />
+        <TextField
+          className={classes.textarea}
+          value={body}
+          variant="filled"
+          label="Body"
+          type="textarea"
+          margin="dense"
+          multiline={true}
+          onChange={bodyChangeHandler}
+          minRows="5"
+          fullWidth
+        ></TextField>
+        <Button
+          onClick={addPostHandler}
+          size="large"
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
+          Add
+        </Button>
+        {formEmpty && <p>The Form is Empty</p>}
       </div>
-    </div>
+      {posts.map((post) => {
+        return (
+          <Box
+            key={post.id}
+            boxShadow={3}
+            maxWidth={1000}
+            margin="auto"
+            minWidth={700}
+            marginTop={2}
+            padding={3}
+            paddingBottom={3}
+            marginBottom={2}
+            borderRadius={16}
+          >
+            <Box
+              display="flex"
+              width={1000}
+              minWidth={700}
+              margin="auto"
+              flexDirection="column"
+              alignItems="center"
+              padding={1}
+              textAlign="left"
+            >
+              <Typography variant="h6">{post.title}</Typography>
+              <Typography maxWidth={1000} minWidth={700} variant="body1">{post.body}</Typography>
+            </Box>
+
+            <ButtonGroup
+              className={classes.buttonGroup}
+              size="large"
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              <Button onClick={(e) => removePostHandler(e, post.id)}>
+                Delete
+              </Button>
+              <Button
+                onClick={(e) =>
+                  showUppdateHandler(e, post.id, post.title, post.body)
+                }
+              >
+                Update
+              </Button>
+              <Button onClick={(e) => showCommentsHandler(e, post.id)}>
+                comments
+              </Button>
+            </ButtonGroup>
+            {+showComments === post.id && (
+              <div className={classes.comments}>
+                {comments.map((comment) => {
+                  return <Comment key={comment.id} comment={comment} />;
+                })}
+                <Button
+                  onClick={hideCommentsHandler}
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Hide
+                </Button>
+              </div>
+            )}
+            {+postUpdate === post.id && (
+              <div className={classes.addPost}>
+                <TextField
+                  variant="filled"
+                  value={updatetitle}
+                  onChange={updateTitleChangeHandler}
+                  type="text"
+                  label="Title"
+                  margin="dense"
+                  fullWidth
+                />
+                <TextField
+                  className={classes.textarea}
+                  value={updateBody}
+                  variant="filled"
+                  label="Body"
+                  type="textarea"
+                  margin="dense"
+                  multiline={true}
+                  onChange={updateBodyChangeHandler}
+                  minRows="5"
+                  fullWidth
+                ></TextField>
+
+                <Button
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  value={post.id}
+                  onClick={(e) => updatePostHandler(e, post.id)}
+                >
+                  Save
+                </Button>
+              </div>
+            )}
+          </Box>
+        );
+      })}
+      {posts.length === 0 && <p>You don't have any post</p>}
+    </ThemeProvider >
   );
 };
 

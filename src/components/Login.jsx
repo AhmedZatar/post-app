@@ -9,24 +9,6 @@ import "fontsource-roboto";
 import { Typography } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 
-// const useStyles = makeStyles({
-//   root: {
-//     background: 'linear-gradient(180deg,#1000,#999)',
-//     border: 0,
-//     display: 'flex',
-//     flexDirection: 'column',
-//     borderRadius: 15,
-//     padding: '10px 40px 4px 40px',
-//     width: '30%',
-//     margin: '250px auto auto auto',
-//   }
-// })
-
-// const DivStyled=(props)=> {
-//   const classes = useStyles();
-//   return <div className={classes.root}>{props.children}</div>
-// }
-
 const theme = createTheme({
   typography: {
     h3: {
@@ -57,14 +39,16 @@ const Login = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    if (!dataCtx.emails.includes(email.trim()) || passwrod !== "123") {
+    if (dataCtx.emails.includes(email.trim()) || passwrod === "123") {
+      dataCtx.getId(email.trim());
+
+
+    } else {
+      
       setIncorrectSubmit(true);
       setPassword("");
       setEmail("");
 
-      return;
-    } else {
-      dataCtx.getId(email.trim());
     }
   };
 
@@ -73,7 +57,8 @@ const Login = () => {
       <Box
         display="flex"
         flexDirection="column"
-        width="30%"
+        maxWidth='300px'
+        minWidth="200px"
         margin="auto"
         marginTop="80px"
         bgcolor="#b0b0b0"
