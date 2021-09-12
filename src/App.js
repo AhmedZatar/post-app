@@ -2,6 +2,8 @@ import { useContext,} from "react";
 import DataContext from "./store/data-context";
 import Login from "./components/Login";
 import Posts from "./components/Posts";
+import Theme from "./components/Theme"
+import NavBar from "./components/NavBar";
 
 
 function App() {
@@ -9,13 +11,12 @@ function App() {
 
 
   return (
-    <div>
+    <Theme>
+      <NavBar/>
       {!dataCtx.isLoggedin&&<Login/>}
       {dataCtx.isLoggedin&&<Posts/>}
 
-
-
-    </div>
+    </Theme>
   );
 }
 
