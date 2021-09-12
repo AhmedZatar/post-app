@@ -34,6 +34,10 @@ function DataProvider(props) {
     setIsLogged(true);
   };
 
+  const logoutHandler=()=>{
+    setIsLogged(false)
+  }
+
   const getIdHandler = (email) => {
     const data = usersData.filter((user) => user.email === email);
     setUserID(data[0].id);
@@ -98,7 +102,7 @@ function DataProvider(props) {
 
       const data = await response.json();
 
-      let updatedPosts = [...posts, data];
+      let updatedPosts = [data, ...posts];
       setPosts(updatedPosts);
 
       console.log("Added Successfully");
@@ -166,6 +170,7 @@ function DataProvider(props) {
     removePost: removePostHandler,
     updatePost: updatePostHandler,
     getId: getIdHandler,
+    onLogout:logoutHandler,
   };
   return (
     <DataContext.Provider value={dataContext}>

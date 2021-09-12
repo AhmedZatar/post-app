@@ -14,9 +14,8 @@ const DataContext= React.createContext({
     addPost:(data)=>{},
     removePost:(id)=>{},
     updatePost:(data)=>{},
-    getId:(email)=>{}
-
-
+    getId:(email)=>{},
+    onLogout:()=>{},
 
 })
 

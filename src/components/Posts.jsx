@@ -2,12 +2,13 @@ import DataContext from "../store/data-context";
 import { useContext, useState, useEffect } from "react/cjs/react.development";
 import Button from "@material-ui/core/Button";
 import Comment from "./Comment";
-import { makeStyles, createTheme , ThemeProvider } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Box } from "@material-ui/core";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Typography from "@material-ui/core/Typography";
-import { orange } from "@material-ui/core/colors";
-
+import Post from "./Post";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 const useStyles = makeStyles((theme) => ({
   comments: {
@@ -37,16 +38,6 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
   },
 }));
-
-
-const theme = createTheme({
-
-  palette: {
-    primary: {
-      main: orange[800],
-    },
-  },
-});
 
 const Posts = () => {
   const classes = useStyles();
@@ -140,14 +131,7 @@ const Posts = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box bgcolor="#b0b0b0"
-      boxShadow={3}
-      maxWidth={1000}
-      padding={3}
-      margin="auto"
-      minWidth={700}
-    >
+    <Box boxShadow={3} maxWidth={1000} padding={3} margin="auto" minWidth={700}>
       <div className={classes.addPost}>
         <Typography variant="h3" gutterBottom>
           {" "}
@@ -190,7 +174,7 @@ const Posts = () => {
           <Box
             key={post.id}
             boxShadow={3}
-            maxWidth='100%'
+            maxWidth="100%"
             margin="auto"
             minWidth={200}
             marginTop={2}
@@ -198,22 +182,12 @@ const Posts = () => {
             paddingBottom={3}
             marginBottom={2}
             borderRadius={16}
-
           >
-            <Box
-              display="flex"
-              width='100%'
-              minWidth={200}
-              margin="auto"
-              flexDirection="column"
-              alignItems="center"
-              padding={1}
-              textAlign="left"
-            >
-              <Typography variant="h6">{post.title}</Typography>
-              <Typography  variant="h6" gutterBottom>{post.body} </Typography>
-            </Box>
-
+            <Post
+              post={post}
+              removePostHandler={removePostHandler}
+              showUppdateHandler={showUppdateHandler} 
+            />
             <ButtonGroup
               className={classes.buttonGroup}
               size="large"
@@ -221,17 +195,7 @@ const Posts = () => {
               color="primary"
               fullWidth
             >
-              <Button onClick={(e) => removePostHandler(e, post.id)}>
-                Delete
-              </Button>
-              <Button
-                onClick={(e) =>
-                  showUppdateHandler(e, post.id, post.title, post.body)
-                }
-              >
-                Update
-              </Button>
-              <Button onClick={(e) => showCommentsHandler(e, post.id)}>
+              <Button endIcon={<ExpandMoreIcon/>} onClick={(e) => showCommentsHandler(e, post.id)}>
                 comments
               </Button>
             </ButtonGroup>
@@ -241,6 +205,7 @@ const Posts = () => {
                   return <Comment key={comment.id} comment={comment} />;
                 })}
                 <Button
+                  endIcon={<ExpandLessIcon/>}
                   onClick={hideCommentsHandler}
                   size="large"
                   variant="contained"
@@ -290,9 +255,8 @@ const Posts = () => {
           </Box>
         );
       })}
-      </Box>
       {posts.length === 0 && <p>You don't have any post</p>}
-    </ThemeProvider >
+    </Box>
   );
 };
 
